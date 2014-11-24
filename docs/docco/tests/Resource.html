@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Resource.litcoffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>Resource.litcoffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">require</span>(<span class="hljs-string">'source-map-support'</span>).install()
+chai = <span class="hljs-built_in">require</span> <span class="hljs-string">'chai'</span>
+expect = chai.expect
+
+rdf = <span class="hljs-built_in">require</span> <span class="hljs-string">'../..'</span>
+Resource = rdf.Resource
+
+resource = <span class="hljs-literal">null</span>
+empty = <span class="hljs-literal">null</span>
+john = <span class="hljs-literal">null</span>
+jane = <span class="hljs-literal">null</span>
+jack = <span class="hljs-literal">null</span>
+
+describe <span class="hljs-string">"GAPI Resource"</span>, <span class="hljs-function">-&gt;</span>
+
+  it <span class="hljs-string">"should create a new resource with empty graph"</span>, <span class="hljs-function">-&gt;</span>
+    empty = rdf.createResource <span class="hljs-string">'http://example.com/empty#test'</span>
+    expect(empty.toString()).to.equal <span class="hljs-string">""</span>
+
+  it <span class="hljs-string">"should create Resource with existing graph"</span>, <span class="hljs-function">-&gt;</span>
+    iri = <span class="hljs-string">'http://example.com/page#resource'</span>
+    graph = <span class="hljs-keyword">do</span> rdf.createGraph
+    graph.add rdf.createTriple rdf.createNamedNode(iri), rdf.createNamedNode(<span class="hljs-string">'http://www.w3.org/2000/01/rdf-schema#label'</span>), rdf.createLiteral(<span class="hljs-string">'resource label'</span>)
+    resource = rdf.createResource iri, graph
+    expect(resource.rdfs.label).to.equal <span class="hljs-string">'resource label'</span>
+
+  it <span class="hljs-string">"should be able to detect Resource"</span>, <span class="hljs-function">-&gt;</span>
+    expect(Resource.is_Resource empty).to.be.<span class="hljs-literal">true</span>
+    expect(Resource.is_Resource resource).to.be.<span class="hljs-literal">true</span>
+
+    expect(Resource.is_Resource <span class="hljs-string">"john"</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_Resource <span class="hljs-number">0</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_Resource <span class="hljs-literal">undefined</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_Resource <span class="hljs-literal">null</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_Resource rdf).to.be.<span class="hljs-literal">false</span>
+
+  it <span class="hljs-string">"should be able to detect CURIE names"</span>, <span class="hljs-function">-&gt;</span>
+    expect(Resource.is_CURIE <span class="hljs-string">'rdf:type'</span>).to.be.<span class="hljs-literal">true</span>
+    expect(Resource.is_CURIE <span class="hljs-string">'foaf:Person'</span>).to.be.<span class="hljs-literal">true</span>
+    expect(Resource.is_CURIE <span class="hljs-string">''</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_CURIE <span class="hljs-string">'Person'</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_CURIE <span class="hljs-string">'http://example.com/empty#test'</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_CURIE <span class="hljs-string">'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'</span>).to.be.<span class="hljs-literal">false</span>
+
+  it <span class="hljs-string">"should be able to detect IRI"</span>, <span class="hljs-function">-&gt;</span>
+    expect(Resource.is_IRI <span class="hljs-string">'rdf:type'</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_IRI <span class="hljs-string">'foaf:Person'</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_IRI <span class="hljs-string">''</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_IRI <span class="hljs-string">'Person'</span>).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_IRI <span class="hljs-string">'http://example.com/empty#test'</span>).to.be.<span class="hljs-literal">true</span>
+    expect(Resource.is_IRI <span class="hljs-string">'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'</span>).to.be.<span class="hljs-literal">true</span>
+
+  it <span class="hljs-string">"creates resource and adds rdf:type foaf:Person"</span>, <span class="hljs-function">-&gt;</span>
+    john = rdf.createResource <span class="hljs-string">'http://example.com/john#me'</span>
+    john.add <span class="hljs-string">'rdf:type'</span>, <span class="hljs-string">'foaf:Person'</span>
+    expect(john.toString()).to.equal <span class="hljs-string">"&lt;http://example.com/john#me&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://xmlns.com/foaf/0.1/Person&gt; .\n"</span>
+
+  it <span class="hljs-string">"add foaf:name"</span>, <span class="hljs-function">-&gt;</span>
+    john.add <span class="hljs-string">'foaf:name'</span>, <span class="hljs-string">'John Doe'</span>
+    expect(john.toString()).to.equal <span class="hljs-string">"&lt;http://example.com/john#me&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://xmlns.com/foaf/0.1/Person&gt; .\n&lt;http://example.com/john#me&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; \"John Doe\" .\n"</span>
+
+  it <span class="hljs-string">"get foaf:name should return the name"</span>, <span class="hljs-function">-&gt;</span>
+    expect(john.get <span class="hljs-string">"foaf:name"</span>).to.equal <span class="hljs-string">"John Doe"</span>
+    expect(john.getAll <span class="hljs-string">"foaf:name"</span>).to.eql [<span class="hljs-string">"John Doe"</span>]
+
+  it <span class="hljs-string">"add another foaf:name"</span>, <span class="hljs-function">-&gt;</span>
+    john.add <span class="hljs-string">'foaf:name'</span>, <span class="hljs-string">'Johny'</span>
+    expect(john.toString()).to.equal <span class="hljs-string">"&lt;http://example.com/john#me&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://xmlns.com/foaf/0.1/Person&gt; .\n&lt;http://example.com/john#me&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; \"John Doe\" .\n&lt;http://example.com/john#me&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; \"Johny\" .\n"</span>
+
+  it <span class="hljs-string">"get foaf:name should return array of names"</span>, <span class="hljs-function">-&gt;</span>
+    expect(john.get <span class="hljs-string">'foaf:name'</span>).to.eql [<span class="hljs-string">"John Doe"</span>, <span class="hljs-string">"Johny"</span>]
+    expect(john.getAll <span class="hljs-string">'foaf:name'</span>).to.eql [<span class="hljs-string">"John Doe"</span>, <span class="hljs-string">"Johny"</span>]
+
+  it <span class="hljs-string">"create another resource"</span>, <span class="hljs-function">-&gt;</span>
+    jane = rdf.createResource <span class="hljs-string">'http://example.com/jane#id'</span>
+    jane.add <span class="hljs-string">'rdf:type'</span>, <span class="hljs-string">'foaf:Person'</span>
+    expect(jane.toString()).to.equal <span class="hljs-string">"&lt;http://example.com/jane#id&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://xmlns.com/foaf/0.1/Person&gt; .\n"</span>
+
+  it <span class="hljs-string">"john foaf:knows jane"</span>, <span class="hljs-function">-&gt;</span>
+    john.add <span class="hljs-string">'foaf:knows'</span>, jane
+    expect(john.get <span class="hljs-string">'foaf:knows'</span>).to.equal <span class="hljs-string">"http://example.com/jane#id"</span>
+
+  it <span class="hljs-string">"john.length should return length of it's graph"</span>, <span class="hljs-function">-&gt;</span>
+    expect(john.length()).to.equal <span class="hljs-number">4</span>
+
+  it <span class="hljs-string">"john.length(predicate) should return number of the predicate triples in it's graph"</span>, <span class="hljs-function">-&gt;</span>
+    expect(john.length <span class="hljs-string">'foaf:name'</span>).to.equal <span class="hljs-number">2</span>
+    expect(john.length <span class="hljs-string">'foaf:knows'</span>).to.equal <span class="hljs-number">1</span>
+    expect(john.length <span class="hljs-string">'rdf:type'</span>).to.equal <span class="hljs-number">1</span>
+    expect(john.length <span class="hljs-string">'foaf:mbox'</span>).to.equal <span class="hljs-number">0</span>
+
+  it <span class="hljs-string">"remove(predicate, value) should remove the triple from it's graph"</span>, <span class="hljs-function">-&gt;</span>
+    jack = rdf.createResource <span class="hljs-string">'http://example.com/jack#'</span>
+    jack.add <span class="hljs-string">'rdf:type'</span>, <span class="hljs-string">'foaf:Person'</span>
+    jack.add <span class="hljs-string">'foaf:nick'</span>, <span class="hljs-string">'jackie'</span>
+    jack.add <span class="hljs-string">'foaf:nick'</span>, <span class="hljs-string">'wackie'</span>
+    jack.add <span class="hljs-string">'foaf:mbox'</span>, <span class="hljs-string">'jack@example.com'</span>
+    jack.add <span class="hljs-string">'foaf:mbox'</span>, <span class="hljs-string">'jack.doe@example.com'</span>
+    jack.add <span class="hljs-string">'foaf:knows'</span>, john
+    jack.add <span class="hljs-string">'foaf:knows'</span>, jane
+    expect(jack.length <span class="hljs-string">'foaf:nick'</span>).to.equal <span class="hljs-number">2</span>
+    jack.remove <span class="hljs-string">'foaf:nick'</span>, <span class="hljs-string">'jackie'</span>
+    expect(jack.get <span class="hljs-string">'foaf:nick'</span>).to.equal <span class="hljs-string">'wackie'</span>
+
+  it <span class="hljs-string">"remove(predicate) should remove all predicate triples from it's graph"</span>, <span class="hljs-function">-&gt;</span>
+    expect(jack.length <span class="hljs-string">'foaf:knows'</span>).to.equal <span class="hljs-number">2</span>
+    jack.remove <span class="hljs-string">'foaf:knows'</span>
+    expect(jack.length <span class="hljs-string">'foaf:knows'</span>).to.equal <span class="hljs-number">0</span>
+
+  it <span class="hljs-string">"replace(predicate, value) should remove all predicate triples from it's graph and add a new one"</span>, <span class="hljs-function">-&gt;</span>
+    expect(jack.length <span class="hljs-string">'foaf:mbox'</span>).to.equal <span class="hljs-number">2</span>
+    jack.replace <span class="hljs-string">'foaf:mbox'</span>, <span class="hljs-string">'jackie@example.com'</span>
+    expect(jack.get <span class="hljs-string">'foaf:mbox'</span>).to.equal <span class="hljs-string">'jackie@example.com'</span>
+
+  it <span class="hljs-string">"harmony catchall getter"</span>, <span class="hljs-function">-&gt;</span>
+    expect(jack.foaf.mbox).to.equal <span class="hljs-string">'jackie@example.com'</span>
+
+  it <span class="hljs-string">"harmony catchall setter adds triple"</span>, <span class="hljs-function">-&gt;</span>
+    jack.foaf.knows = john
+    expect(jack.foaf.knows).to.equal <span class="hljs-string">'http://example.com/john#me'</span>
+
+  it <span class="hljs-string">"harmony catchall setter adds another triple"</span>, <span class="hljs-function">-&gt;</span>
+    jack.foaf.knows = jane
+    expect(jack.foaf.knows).to.eql [<span class="hljs-string">'http://example.com/john#me'</span>, <span class="hljs-string">'http://example.com/jane#id'</span>]</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
