@@ -4,6 +4,7 @@
 
     rdf = require '../..'
     Resource = rdf.Resource
+    env = rdf.environment
 
     resource = null
     empty = null
@@ -14,14 +15,14 @@
     describe "GAPI Resource", ->
 
       it "should create a new resource with empty graph", ->
-        empty = rdf.createResource 'http://example.com/empty#test'
+        empty = env.createResource 'http://example.com/empty#test'
         expect(empty.toString()).to.equal ""
 
       it "should create Resource with existing graph", ->
         iri = 'http://example.com/page#resource'
-        graph = do rdf.createGraph
-        graph.add rdf.createTriple rdf.createNamedNode(iri), rdf.createNamedNode('http://www.w3.org/2000/01/rdf-schema#label'), rdf.createLiteral('resource label')
-        resource = rdf.createResource iri, graph
+        graph = do env.createGraph
+        graph.add env.createTriple env.createNamedNode(iri), env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#label'), env.createLiteral('resource label')
+        resource = env.createResource iri, graph
         expect(resource.rdfs.label).to.equal 'resource label'
 
       it "should be able to detect Resource", ->
@@ -32,7 +33,7 @@
         expect(Resource.is_Resource 0).to.be.false
         expect(Resource.is_Resource undefined).to.be.false
         expect(Resource.is_Resource null).to.be.false
-        expect(Resource.is_Resource rdf).to.be.false
+        expect(Resource.is_Resource env).to.be.false
 
       it "should be able to detect CURIE names", ->
         expect(Resource.is_CURIE 'rdf:type').to.be.true
@@ -51,7 +52,7 @@
         expect(Resource.is_IRI 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type').to.be.true
 
       it "creates resource and adds rdf:type foaf:Person", ->
-        john = rdf.createResource 'http://example.com/john#me'
+        john = env.createResource 'http://example.com/john#me'
         john.add 'rdf:type', 'foaf:Person'
         expect(john.toString()).to.equal "<http://example.com/john#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .\n"
 
@@ -72,7 +73,7 @@
         expect(john.getAll 'foaf:name').to.eql ["John Doe", "Johny"]
 
       it "create another resource", ->
-        jane = rdf.createResource 'http://example.com/jane#id'
+        jane = env.createResource 'http://example.com/jane#id'
         jane.add 'rdf:type', 'foaf:Person'
         expect(jane.toString()).to.equal "<http://example.com/jane#id> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .\n"
 
@@ -90,7 +91,7 @@
         expect(john.length 'foaf:mbox').to.equal 0
 
       it "remove(predicate, value) should remove the triple from it's graph", ->
-        jack = rdf.createResource 'http://example.com/jack#'
+        jack = env.createResource 'http://example.com/jack#'
         jack.add 'rdf:type', 'foaf:Person'
         jack.add 'foaf:nick', 'jackie'
         jack.add 'foaf:nick', 'wackie'
@@ -122,3 +123,16 @@
       it "harmony catchall setter adds another triple", ->
         jack.foaf.knows = jane
         expect(jack.foaf.knows).to.eql ['http://example.com/john#me', 'http://example.com/jane#id']
+
+    describe "GAPI ClassMap", ->
+
+      it "should set new mapping", ->
+        class Person
+          upperCasedName: () ->
+            for name in @getAll 'foaf:name'
+              do name.toUpperCase
+        env.setClass 'foaf:Person', Person
+        expect(env.getClass 'foaf:Person').to.be.eql Person
+
+      it "should call mapped class function", ->
+        expect(do john.foaf.upperCasedName).to.be.eql ["JOHN DOE", "JOHNY"]

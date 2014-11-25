@@ -32,9 +32,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>rdf = <span class="hljs-built_in">require</span> <span class="hljs-string">'rdf'</span>
-rdf_ext = <span class="hljs-built_in">require</span> <span class="hljs-string">'rdf-ext'</span>
-rdf_ext rdf.environment
-<span class="hljs-built_in">module</span>.exports = rdf.environment</pre></div></div>
+<span class="hljs-built_in">require</span>(<span class="hljs-string">'rdf-ext'</span>)(rdf.RDFEnvironment.prototype)
+<span class="hljs-built_in">module</span>.exports = rdf</pre></div></div>
             
         </li>
         

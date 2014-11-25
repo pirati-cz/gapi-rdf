@@ -1,8 +1,14 @@
     rdf = require './interfaces'
-    Resource = require './Resource'
 
-    rdf.Resource = Resource
-    rdf.createResource = (iri, graph) ->
-      return new Resource iri, graph, this
+    cm = require './ClassMap'
+    rdf.ClassMap = cm.ClassMap
+    rdf.RDFEnvironment.prototype.createClassMap = cm.RDFEnvironment.prototype.createClassMap
+    rdf.Profile.prototype.getClass = cm.Profile.prototype.getClass
+    rdf.Profile.prototype.setClass = cm.Profile.prototype.setClass
+    rdf.Profile.prototype.setDefaultClass = cm.Profile.prototype.setDefaultClass
+
+    resource = require './Resource'
+    rdf.Resource = resource.Resource
+    rdf.RDFEnvironment.prototype.createResource = resource.RDFEnvironment.prototype.createResource
 
     module.exports = rdf

@@ -68,6 +68,20 @@
       toString: ->
         @graph.toString()
 
+      resolveClassCall: (prefix, method) ->
+        dbg "resolveClassCall '#{prefix}':'#{method}'()"
+        types = @getAll 'rdf:type'
+        for rdf_type in types
+          [type_prefix] = rdf_type.split /:/
+          if prefix == type_prefix
+            handling_class = @environment.getClass rdf_type
+            if handling_class? and handling_class.prototype[method]?
+              fn = handling_class.prototype[method]
+              dbg "resolveClassCall \tbinding call"
+              return fn.bind this
+        dbg "resolveClassCall \tundefined"
+        undefined
+
       @is_CURIE: (name) ->
         /:[^\/][^\/]/.test name
 
@@ -122,7 +136,15 @@
     ResourceNamespaceProxyHandler =
       get: (target, name, reciever) ->
         dbg "HARMONY - ResourceNamespaceProxyHandler catchall getter getting '#{name}' from resource's graph"
-        __get(target, 'resource').get __get(target, 'prefix')+':'+name
+
+        prefix = __get(target, 'prefix')
+        resource = __get(target, 'resource')
+        environment = __get(resource, 'environment')
+        classCall = resource.resolveClassCall prefix, name
+        return classCall if classCall?
+
+        __get(target, 'resource').get prefix+':'+name
+
       set: (target, name, value, reciever) ->
         dbg "HARMONY - ResourceNamespaceProxyHandler catchall setter setting '#{name}' with '#{value}' into resource's graph"
         __get(target, 'resource').add __get(target, 'prefix')+':'+name, value
@@ -133,5 +155,10 @@
         dbg "HARMONY - new ResourceNamespaceHandler for #{@resource.iri} and ns prefix #{@prefix}"
         return new Proxy this, ResourceNamespaceProxyHandler
 
+    class RDFEnvironment
+      createResource: (iri, graph) ->
+        new Resource iri, graph, this
 
-    module.exports = Resource
+    module.exports =
+      Resource: Resource
+      RDFEnvironment: RDFEnvironment

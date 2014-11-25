@@ -31,11 +31,17 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>rdf = <span class="hljs-built_in">require</span> <span class="hljs-string">'./interfaces'</span>
-Resource = <span class="hljs-built_in">require</span> <span class="hljs-string">'./Resource'</span>
 
-rdf.Resource = Resource
-rdf.createResource = <span class="hljs-function"><span class="hljs-params">(iri, graph)</span> -&gt;</span>
-  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Resource iri, graph, <span class="hljs-keyword">this</span>
+cm = <span class="hljs-built_in">require</span> <span class="hljs-string">'./ClassMap'</span>
+rdf.ClassMap = cm.ClassMap
+rdf.RDFEnvironment.prototype.createClassMap = cm.RDFEnvironment.prototype.createClassMap
+rdf.Profile.prototype.getClass = cm.Profile.prototype.getClass
+rdf.Profile.prototype.setClass = cm.Profile.prototype.setClass
+rdf.Profile.prototype.setDefaultClass = cm.Profile.prototype.setDefaultClass
+
+resource = <span class="hljs-built_in">require</span> <span class="hljs-string">'./Resource'</span>
+rdf.Resource = resource.Resource
+rdf.RDFEnvironment.prototype.createResource = resource.RDFEnvironment.prototype.createResource
 
 <span class="hljs-built_in">module</span>.exports = rdf</pre></div></div>
             

@@ -36,6 +36,7 @@ expect = chai.expect
 
 rdf = <span class="hljs-built_in">require</span> <span class="hljs-string">'../..'</span>
 Resource = rdf.Resource
+env = rdf.environment
 
 resource = <span class="hljs-literal">null</span>
 empty = <span class="hljs-literal">null</span>
@@ -46,14 +47,14 @@ jack = <span class="hljs-literal">null</span>
 describe <span class="hljs-string">"GAPI Resource"</span>, <span class="hljs-function">-&gt;</span>
 
   it <span class="hljs-string">"should create a new resource with empty graph"</span>, <span class="hljs-function">-&gt;</span>
-    empty = rdf.createResource <span class="hljs-string">'http://example.com/empty#test'</span>
+    empty = env.createResource <span class="hljs-string">'http://example.com/empty#test'</span>
     expect(empty.toString()).to.equal <span class="hljs-string">""</span>
 
   it <span class="hljs-string">"should create Resource with existing graph"</span>, <span class="hljs-function">-&gt;</span>
     iri = <span class="hljs-string">'http://example.com/page#resource'</span>
-    graph = <span class="hljs-keyword">do</span> rdf.createGraph
-    graph.add rdf.createTriple rdf.createNamedNode(iri), rdf.createNamedNode(<span class="hljs-string">'http://www.w3.org/2000/01/rdf-schema#label'</span>), rdf.createLiteral(<span class="hljs-string">'resource label'</span>)
-    resource = rdf.createResource iri, graph
+    graph = <span class="hljs-keyword">do</span> env.createGraph
+    graph.add env.createTriple env.createNamedNode(iri), env.createNamedNode(<span class="hljs-string">'http://www.w3.org/2000/01/rdf-schema#label'</span>), env.createLiteral(<span class="hljs-string">'resource label'</span>)
+    resource = env.createResource iri, graph
     expect(resource.rdfs.label).to.equal <span class="hljs-string">'resource label'</span>
 
   it <span class="hljs-string">"should be able to detect Resource"</span>, <span class="hljs-function">-&gt;</span>
@@ -64,7 +65,7 @@ describe <span class="hljs-string">"GAPI Resource"</span>, <span class="hljs-fun
     expect(Resource.is_Resource <span class="hljs-number">0</span>).to.be.<span class="hljs-literal">false</span>
     expect(Resource.is_Resource <span class="hljs-literal">undefined</span>).to.be.<span class="hljs-literal">false</span>
     expect(Resource.is_Resource <span class="hljs-literal">null</span>).to.be.<span class="hljs-literal">false</span>
-    expect(Resource.is_Resource rdf).to.be.<span class="hljs-literal">false</span>
+    expect(Resource.is_Resource env).to.be.<span class="hljs-literal">false</span>
 
   it <span class="hljs-string">"should be able to detect CURIE names"</span>, <span class="hljs-function">-&gt;</span>
     expect(Resource.is_CURIE <span class="hljs-string">'rdf:type'</span>).to.be.<span class="hljs-literal">true</span>
@@ -83,7 +84,7 @@ describe <span class="hljs-string">"GAPI Resource"</span>, <span class="hljs-fun
     expect(Resource.is_IRI <span class="hljs-string">'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'</span>).to.be.<span class="hljs-literal">true</span>
 
   it <span class="hljs-string">"creates resource and adds rdf:type foaf:Person"</span>, <span class="hljs-function">-&gt;</span>
-    john = rdf.createResource <span class="hljs-string">'http://example.com/john#me'</span>
+    john = env.createResource <span class="hljs-string">'http://example.com/john#me'</span>
     john.add <span class="hljs-string">'rdf:type'</span>, <span class="hljs-string">'foaf:Person'</span>
     expect(john.toString()).to.equal <span class="hljs-string">"&lt;http://example.com/john#me&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://xmlns.com/foaf/0.1/Person&gt; .\n"</span>
 
@@ -104,7 +105,7 @@ describe <span class="hljs-string">"GAPI Resource"</span>, <span class="hljs-fun
     expect(john.getAll <span class="hljs-string">'foaf:name'</span>).to.eql [<span class="hljs-string">"John Doe"</span>, <span class="hljs-string">"Johny"</span>]
 
   it <span class="hljs-string">"create another resource"</span>, <span class="hljs-function">-&gt;</span>
-    jane = rdf.createResource <span class="hljs-string">'http://example.com/jane#id'</span>
+    jane = env.createResource <span class="hljs-string">'http://example.com/jane#id'</span>
     jane.add <span class="hljs-string">'rdf:type'</span>, <span class="hljs-string">'foaf:Person'</span>
     expect(jane.toString()).to.equal <span class="hljs-string">"&lt;http://example.com/jane#id&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://xmlns.com/foaf/0.1/Person&gt; .\n"</span>
 
@@ -122,7 +123,7 @@ describe <span class="hljs-string">"GAPI Resource"</span>, <span class="hljs-fun
     expect(john.length <span class="hljs-string">'foaf:mbox'</span>).to.equal <span class="hljs-number">0</span>
 
   it <span class="hljs-string">"remove(predicate, value) should remove the triple from it's graph"</span>, <span class="hljs-function">-&gt;</span>
-    jack = rdf.createResource <span class="hljs-string">'http://example.com/jack#'</span>
+    jack = env.createResource <span class="hljs-string">'http://example.com/jack#'</span>
     jack.add <span class="hljs-string">'rdf:type'</span>, <span class="hljs-string">'foaf:Person'</span>
     jack.add <span class="hljs-string">'foaf:nick'</span>, <span class="hljs-string">'jackie'</span>
     jack.add <span class="hljs-string">'foaf:nick'</span>, <span class="hljs-string">'wackie'</span>
@@ -153,7 +154,20 @@ describe <span class="hljs-string">"GAPI Resource"</span>, <span class="hljs-fun
 
   it <span class="hljs-string">"harmony catchall setter adds another triple"</span>, <span class="hljs-function">-&gt;</span>
     jack.foaf.knows = jane
-    expect(jack.foaf.knows).to.eql [<span class="hljs-string">'http://example.com/john#me'</span>, <span class="hljs-string">'http://example.com/jane#id'</span>]</pre></div></div>
+    expect(jack.foaf.knows).to.eql [<span class="hljs-string">'http://example.com/john#me'</span>, <span class="hljs-string">'http://example.com/jane#id'</span>]
+
+describe <span class="hljs-string">"GAPI ClassMap"</span>, <span class="hljs-function">-&gt;</span>
+
+  it <span class="hljs-string">"should set new mapping"</span>, <span class="hljs-function">-&gt;</span>
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span></span>
+      <span class="hljs-attribute">upperCasedName</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+        <span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> <span class="hljs-property">@getAll</span> <span class="hljs-string">'foaf:name'</span>
+          <span class="hljs-keyword">do</span> name.toUpperCase
+    env.setClass <span class="hljs-string">'foaf:Person'</span>, Person
+    expect(env.getClass <span class="hljs-string">'foaf:Person'</span>).to.be.eql Person
+
+  it <span class="hljs-string">"should call mapped class function"</span>, <span class="hljs-function">-&gt;</span>
+    expect(<span class="hljs-keyword">do</span> john.foaf.upperCasedName).to.be.eql [<span class="hljs-string">"JOHN DOE"</span>, <span class="hljs-string">"JOHNY"</span>]</pre></div></div>
             
         </li>
         
