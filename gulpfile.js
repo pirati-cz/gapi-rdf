@@ -95,7 +95,7 @@ tasks.watch_compile = function() {
   gulp.watch(p.examples.src, ['compile_examples']);
 };
 tasks.watch_docs = function() {
-  gulp.watch(p.docs.docco.in, ['docco']);
+  gulp.watch(p.docs.docco.in, ['docco_docs']);
   gulp.watch(p.scripts.src, ['docco_scripts']);
   gulp.watch(p.tests.src, ['docco_tests']);
   gulp.watch(p.examples.src, ['docco_examples']);
