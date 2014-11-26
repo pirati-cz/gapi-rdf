@@ -42,7 +42,7 @@ compile = function(src, lib) {
   return gulp.src(src)
     .pipe(sourcemaps.init())
     .pipe(coffee())
-    .pipe(sourcemaps.write({ includeContent: false, sourceRoot: __dirname+'/'+lib }))
+    .pipe(sourcemaps.write('sourcemaps', { includeContent: false, sourceRoot: __dirname+'/'+lib }))
     .pipe(gulp.dest(lib));
 };
 
