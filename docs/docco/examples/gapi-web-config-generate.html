@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>gapi-web-config-generate.litcoffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>gapi-web-config-generate.litcoffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>How to run this example?</p>
+<pre><code>node --harmony examples/lib/gapi-web-config-generate
+</code></pre><p>This example just loads default GAPI RDF environment</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>rdf = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../..'</span>).environment</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>adds prefixes</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>rdf.setPrefix <span class="hljs-string">'gapi'</span>, <span class="hljs-string">'http://graphapi.ga/ns/gapi#'</span>
+rdf.setPrefix <span class="hljs-string">'gs'</span>, <span class="hljs-string">'http://graphapi.ga/ns/gapi-servers#'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>creates a resource</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>web = rdf.createResource <span class="hljs-string">'http://example.com/'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>adds several triples</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>web.rdf.type = <span class="hljs-string">'gs:WebServer'</span>
+web.gs.listenPort = <span class="hljs-string">'80'</span>
+web.gs.protocol = <span class="hljs-string">'gs:http'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>and writes resource’s graph in turtle to stdout</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">console</span>.log web.toString()</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

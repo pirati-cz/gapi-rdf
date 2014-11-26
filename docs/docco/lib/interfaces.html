@@ -31,7 +31,25 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>rdf = <span class="hljs-built_in">require</span> <span class="hljs-string">'rdf'</span>
+            <div class="content"><div class='highlight'><pre>rdf = <span class="hljs-built_in">require</span> <span class="hljs-string">'rdf'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>patch not implemented method</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>rdf.Graph.prototype.removeMatches = <span class="hljs-function"><span class="hljs-params">(s, p, o)</span> -&gt;</span>
+  <span class="hljs-property">@match</span>(s, p, o).forEach (t) =&gt;
+    <span class="hljs-property">@remove</span> t
+
 <span class="hljs-built_in">require</span>(<span class="hljs-string">'rdf-ext'</span>)(rdf.RDFEnvironment.prototype)
 <span class="hljs-built_in">module</span>.exports = rdf</pre></div></div>
             

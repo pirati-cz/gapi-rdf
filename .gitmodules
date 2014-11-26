@@ -1,3 +1,0 @@
-[submodule "node-rdf"]
-	path = node_modules/rdf
-	url = https://github.com/tomasklapka/node-rdf.git
