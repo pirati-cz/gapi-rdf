@@ -1,6 +1,14 @@
     Reflect = require 'harmony-reflect'
 
+    class RDFEnvironment
+      createResource: (iri, graph) ->
+        new Resource iri, graph, this
+
     class Resource
+
+      @RDFInterfacesExtMap =
+        'Resource': Resource
+        'RDFEnvironment': RDFEnvironment
 
       @environment = null
 
@@ -18,20 +26,6 @@
           @graph = do @environment.createGraph
 
         return new Proxy this, ResourceProxyHandler
-
-      _resolve: (input) ->
-        if Resource.is_Resource input
-          return input.subject
-        input = @environment.resolve input if Resource.is_CURIE input
-        if Resource.is_IRI input
-          return @environment.createNamedNode input
-        @environment.createLiteral input
-
-      _shrink: (input) ->
-        value = input.nominalValue
-        if Resource.is_IRI value
-          return @environment.shrink value
-        value
 
       add: (predicate, object) ->
         triple = @environment.createTriple @subject, @_resolve(predicate), @_resolve(object)
@@ -68,17 +62,32 @@
       toString: ->
         @graph.toString()
 
-      resolveClassCall: (prefix, method) ->
+      _resolve: (input) ->
+        if Resource.is_Resource input
+          return input.subject
+        input = @environment.resolve input if Resource.is_CURIE input
+        if Resource.is_IRI input
+          return @environment.createNamedNode input
+        @environment.createLiteral input
+
+      _shrink: (input) ->
+        value = input.nominalValue
+        if Resource.is_IRI value
+          return @environment.shrink value
+        value
+
+      _resolveClassCall: (prefix, method) ->
         dbg "resolveClassCall '#{prefix}':'#{method}'()"
         types = @getAll 'rdf:type'
         for rdf_type in types
           [type_prefix] = rdf_type.split /:/
           if prefix == type_prefix
-            handling_class = @environment.getClass rdf_type
-            if handling_class? and handling_class.prototype[method]?
-              fn = handling_class.prototype[method]
-              dbg "resolveClassCall \tbinding call"
-              return fn.bind this
+            if @environment.getClass?
+              handling_class = @environment.getClass rdf_type
+              if handling_class? and handling_class.prototype[method]?
+                fn = handling_class.prototype[method]
+                dbg "resolveClassCall \tbinding call"
+                return fn.bind this
         dbg "resolveClassCall \tundefined"
         undefined
 
@@ -139,11 +148,10 @@
 
         prefix = __get(target, 'prefix')
         resource = __get(target, 'resource')
-        environment = __get(resource, 'environment')
-        classCall = resource.resolveClassCall prefix, name
+        classCall = resource._resolveClassCall prefix, name
         return classCall if classCall?
 
-        __get(target, 'resource').get prefix+':'+name
+        resource.get prefix+':'+name
 
       set: (target, name, value, reciever) ->
         dbg "HARMONY - ResourceNamespaceProxyHandler catchall setter setting '#{name}' with '#{value}' into resource's graph"
@@ -155,10 +163,4 @@
         dbg "HARMONY - new ResourceNamespaceHandler for #{@resource.iri} and ns prefix #{@prefix}"
         return new Proxy this, ResourceNamespaceProxyHandler
 
-    class RDFEnvironment
-      createResource: (iri, graph) ->
-        new Resource iri, graph, this
-
-    module.exports =
-      Resource: Resource
-      RDFEnvironment: RDFEnvironment
+    module.exports = Resource

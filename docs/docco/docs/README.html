@@ -36,6 +36,11 @@
               </div>
               <p><strong>Only for experimental purposes!</strong></p>
 <p>This is a release of an unstable prototype version of GAPI RDF library. It’s not tested in production at all.</p>
+<ul>
+<li><code>docs/docco</code> - generated docs from Literate CoffeeScript and MD</li>
+<li><code>**/src</code> - CoffeeScript source files.</li>
+<li><code>**/lib</code> - JavaScript files compiled from CoffeeScript.</li>
+</ul>
 <h2 id="requirements">Requirements</h2>
 
             </div>
@@ -50,9 +55,9 @@
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>Since the library uses Harmony proxies you need to execute Node.js with the <code>--harmony</code> runtime option:</p>
-<pre><code>node --harmony script<span class="hljs-emphasis">_using_</span>gapi-rdf.js
+<pre><code>node --harmony examples/lib/gapi-web-config-generate.js
 </code></pre><p>When you see <code>Error: proxies not supported on this platform</code>, you’ve probably forgotten to add the option.</p>
-<h2 id="classes">Classes</h2>
+<h2 id="rdf-interfaces">RDF Interfaces</h2>
 
             </div>
             
@@ -65,11 +70,9 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <ul>
-<li>ClassMap - map of a class to rdf:type</li>
-<li>Resource - subject-centered rdf-interfaces’ graph wrapper (ORM)</li>
-</ul>
-<h2 id="rdf-interfaces">RDF Interfaces</h2>
+              <p>For the present GAPI RDF is being developed and tested with Acubed’s <a href="https://github.com/Acubed/node-rdf">node-rdf</a> (npm package <code>rdf</code>). Later, it should be possible to switch implementations.</p>
+<p>GAPI RDF also extends the interface by <code>rdf-ext</code> from bergos.</p>
+<h2 id="rdf-interfaces-extender">RDF Interfaces Extender</h2>
 
             </div>
             
@@ -82,11 +85,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>GAPI RDF uses Acubed’s <a href="https://github.com/Acubed/node-rdf">node-rdf</a> - implementation of RDF Interfaces (npm package <code>rdf</code>).</p>
-<p>RDF Interface library is extended by classes: <code>Resource</code> and <code>ClassMap</code>.
-Its <code>Profile</code> is extended by methods: <code>getClass()</code>, <code>setClass()</code> and <code>setDefaultClass</code>.
-Its <code>RDFEnvrionment</code> is extended by methods: <code>createResource()</code> and <code>createClassMap()</code></p>
-<h2 id="docs">Docs</h2>
+              <p>GAPI RDF works also as a general extender of the underlying implementation of RDF Interfaces.</p>
+<p>There is an added method <code>use()</code> for extensions to be loaded into interface</p>
+<p><code>use()</code> takes object where it searches for ‘RDFInterfacesExtMap’ property where should be a mapping of the extension.</p>
+<p>See <a href="https://github.com/pirati-cz/gapi-rdf/blob/master/src/ClassMap.litcoffee">ClassMap</a> or <a href="https://github.com/pirati-cz/gapi-rdf/blob/master/src/Resource.litcoffee">Resource</a> source files for simple mapping examples.</p>
+<h2 id="extensions">Extensions</h2>
 
             </div>
             
@@ -99,8 +102,29 @@ Its <code>RDFEnvrionment</code> is extended by methods: <code>createResource()</
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Docco generated documentation: <a href="https://github.com/pirati-cz/gapi-rdf/tree/master/docs/docco">docco docs</a></p>
-<h2 id="usage">Usage</h2>
+              <p>GAPI RDF contains two usable extensions: Resource and ClassMap. Both can be used standalone, though ClassMap has no other functionality than manipulation of the class map.</p>
+<p><strong>Resource</strong></p>
+<p>subject-oriented ORM wrapper of interfaces’ <em>graph</em></p>
+<pre><code>rdf = require &#39;gapi-rdf&#39;
+rdf.use rdf.extensions.Resource
+</code></pre><p>Adds:</p>
+<ul>
+<li><code>Resource</code> class</li>
+<li><code>createResource(iri, graph)</code> to <code>RDFEnvironment</code></li>
+</ul>
+<p><strong>ClassMap</strong></p>
+<p>RDFEnvironment map for mapping JS classes to rdf:types. Enables calling class methods on the Resource instance if one of its rdf:types matches the mapping, ie. Resource extension uses this map to find methods to bind and call.</p>
+<pre><code>rdf = require &#39;gapi-rdf&#39;
+rdf.use rdf.extensions.ClassMap
+</code></pre><p>Adds:</p>
+<ul>
+<li><code>ClassMap</code> class</li>
+<li>method <code>createClassMap(classMap)</code> to <code>RDFEnvironment</code></li>
+<li>methods <code>getClass(rdf_type)</code>,</li>
+<li><code>setClass(rdf_type, handling_class)</code> and</li>
+<li><code>setDefaultClass(handling_class)</code> to <code>Profile</code></li>
+</ul>
+<h2 id="docs">Docs</h2>
 
             </div>
             
@@ -113,9 +137,8 @@ Its <code>RDFEnvrionment</code> is extended by methods: <code>createResource()</
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>For the usage see <a href="https://github.com/pirati-cz/gapi-rdf/blob/master/test/src/Resource.litcoffee">Resource test</a></p>
-<p>Examples: <a href="https://github.com/pirati-cz/gapi-rdf/tree/master/examples">examples</a></p>
-<h2 id="todo">TODO</h2>
+              <p>Docco generated documentation: <a href="https://github.com/pirati-cz/gapi-rdf/tree/master/docs/docco">docco docs</a></p>
+<h2 id="usage">Usage</h2>
 
             </div>
             
@@ -127,6 +150,21 @@ Its <code>RDFEnvrionment</code> is extended by methods: <code>createResource()</
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>For the usage see <a href="https://github.com/pirati-cz/gapi-rdf/blob/master/test/src/Resource.litcoffee">Resource test</a></p>
+<p>Or see <a href="https://github.com/pirati-cz/gapi-rdf/tree/master/examples">examples</a></p>
+<h2 id="todo">TODO</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>See <a href="https://github.com/pirati-cz/gapi-rdf/issues">issues</a>.</p>
 <p><strong>Milestone v1.0.0-alpha</strong></p>

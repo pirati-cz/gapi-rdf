@@ -29,11 +29,12 @@
               </div>
               <p>How to run this example?</p>
 <pre><code>node --harmony examples/lib/gapi-web-config-generate
-</code></pre><p>This example just loads default GAPI RDF environment</p>
+</code></pre><p>This example just loads rdf-interfaces and tells it to use Resource extension</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>rdf = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../..'</span>).environment</pre></div></div>
+            <div class="content"><div class='highlight'><pre>rdfi = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../..'</span>)
+rdfi.use rdfi.extensions.Resource</pre></div></div>
             
         </li>
         
@@ -43,6 +44,21 @@
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Use default GAPI RDF environment</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>rdf = rdfi.environment</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>adds prefixes</p>
 
@@ -54,11 +70,11 @@ rdf.setPrefix <span class="hljs-string">'gs'</span>, <span class="hljs-string">'
         </li>
         
         
-        <li id="section-3">
+        <li id="section-4">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
+                <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
               <p>creates a resource</p>
 
@@ -69,11 +85,11 @@ rdf.setPrefix <span class="hljs-string">'gs'</span>, <span class="hljs-string">'
         </li>
         
         
-        <li id="section-4">
+        <li id="section-5">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>adds several triples</p>
 
@@ -86,11 +102,11 @@ web.gs.protocol = <span class="hljs-string">'gs:http'</span></pre></div></div>
         </li>
         
         
-        <li id="section-5">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>and writes resource’s graph in turtle to stdout</p>
 

@@ -1,7 +1,11 @@
 (function() {
-  var rdf, web;
+  var rdf, rdfi, web;
 
-  rdf = require('../..').environment;
+  rdfi = require('../..');
+
+  rdfi.use(rdfi.extensions.Resource);
+
+  rdf = rdfi.environment;
 
   rdf.setPrefix('gapi', 'http://graphapi.ga/ns/gapi#');
 

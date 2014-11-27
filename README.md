@@ -5,32 +5,76 @@ gapi-rdf
 
 This is a release of an unstable prototype version of GAPI RDF library. It's not tested in production at all.
 
+ * `docs/docco` - generated docs from Literate CoffeeScript and MD
+ * `**/src` - CoffeeScript source files.
+ * `**/lib` - JavaScript files compiled from CoffeeScript.
 
 Requirements
 ------------
 
 Since the library uses Harmony proxies you need to execute Node.js with the `--harmony` runtime option:
 ```
-    node --harmony script_using_gapi-rdf.js
+    node --harmony examples/lib/gapi-web-config-generate.js
 ```
 
 When you see `Error: proxies not supported on this platform`, you've probably forgotten to add the option.
 
 
-Classes
--------
- * ClassMap - map of a class to rdf:type
- * Resource - subject-centered rdf-interfaces' graph wrapper (ORM)
-
-
 RDF Interfaces
 --------------
 
-GAPI RDF uses Acubed's [node-rdf](https://github.com/Acubed/node-rdf) - implementation of RDF Interfaces (npm package `rdf`).
+For the present GAPI RDF is being developed and tested with Acubed's [node-rdf](https://github.com/Acubed/node-rdf) (npm package `rdf`). Later, it should be possible to switch implementations.
 
-RDF Interface library is extended by classes: `Resource` and `ClassMap`.
-Its `Profile` is extended by methods: `getClass()`, `setClass()` and `setDefaultClass`.
-Its `RDFEnvrionment` is extended by methods: `createResource()` and `createClassMap()`
+GAPI RDF also extends the interface by `rdf-ext` from bergos.
+
+
+RDF Interfaces Extender
+-----------------------
+
+GAPI RDF works also as a general extender of the underlying implementation of RDF Interfaces.
+
+There is an added method `use()` for extensions to be loaded into interface
+
+`use()` takes object where it searches for 'RDFInterfacesExtMap' property where should be a mapping of the extension.
+
+See [ClassMap](https://github.com/pirati-cz/gapi-rdf/blob/master/src/ClassMap.litcoffee) or [Resource](https://github.com/pirati-cz/gapi-rdf/blob/master/src/Resource.litcoffee) source files for simple mapping examples.
+
+
+Extensions
+----------
+
+GAPI RDF contains two usable extensions: Resource and ClassMap. Both can be used standalone, though ClassMap has no other functionality than manipulation of the class map.
+
+
+**Resource**
+
+subject-oriented ORM wrapper of interfaces' *graph*
+
+```
+  rdf = require 'gapi-rdf'
+  rdf.use rdf.extensions.Resource
+```
+
+Adds:
+ * `Resource` class
+ * `createResource(iri, graph)` to `RDFEnvironment`
+
+
+**ClassMap**
+
+RDFEnvironment map for mapping JS classes to rdf:types. Enables calling class methods on the Resource instance if one of its rdf:types matches the mapping, ie. Resource extension uses this map to find methods to bind and call.
+
+```
+  rdf = require 'gapi-rdf'
+  rdf.use rdf.extensions.ClassMap
+```
+
+Adds:
+ * `ClassMap` class
+ * method `createClassMap(classMap)` to `RDFEnvironment`
+ * methods `getClass(rdf_type)`,
+ * `setClass(rdf_type, handling_class)` and
+ * `setDefaultClass(handling_class)` to `Profile`
 
 
 Docs
@@ -44,7 +88,8 @@ Usage
 
 For the usage see [Resource test](https://github.com/pirati-cz/gapi-rdf/blob/master/test/src/Resource.litcoffee)
 
-Examples: [examples](https://github.com/pirati-cz/gapi-rdf/tree/master/examples)
+Or see [examples](https://github.com/pirati-cz/gapi-rdf/tree/master/examples)
+
 
 TODO
 ----

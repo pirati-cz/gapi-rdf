@@ -1,4 +1,28 @@
+
+    class Profile
+
+      getClass: (rdf_type, context_string) ->
+        @['classes']?.get rdf_type, context_string
+
+      setClass: (rdf_type, handling_class, context_string) ->
+        @['classes'] ?= new ClassMap()
+        @['classes'].set rdf_type, handling_class, context_string
+
+      setDefaultClass: (handling_class, context_string) ->
+        @['classes'] ?= new ClassMap()
+        @['classes'].setDefault handling_class, context_string
+
+    class RDFEnvironment
+
+      createClassMap: (classMap) ->
+        (new ClassMap()).import classMap
+
     class ClassMap
+
+      @RDFInterfacesExtMap =
+        'ClassMap': ClassMap
+        'Profile': Profile
+        'RDFEnvironment': RDFEnvironment
 
       constructor: () ->
 
@@ -26,25 +50,4 @@
             else
               @[rdf_type][context_string] ?= handler
 
-    class Profile
-
-      getClass: (rdf_type, context_string) ->
-        @['classes']?.get rdf_type, context_string
-
-      setClass: (rdf_type, handling_class, context_string) ->
-        @['classes'] ?= new ClassMap()
-        @['classes'].set rdf_type, handling_class, context_string
-
-      setDefaultClass: (handling_class, context_string) ->
-        @['classes'] ?= new ClassMap()
-        @['classes'].setDefault handling_class, context_string
-
-    class RDFEnvironment
-
-      createClassMap: (classMap) ->
-        (new ClassMap()).import classMap
-
-    module.exports =
-      ClassMap: ClassMap
-      Profile: Profile
-      RDFEnvironment: RDFEnvironment
+    module.exports = ClassMap

@@ -7,7 +7,9 @@ var sourcemaps = require('gulp-sourcemaps');
 var del = require('del');
 
 // paths
-var p = {};
+var p = {
+  root: __dirname + '/'
+};
 p.docs = {
   out: 'docs/'
 };
@@ -39,10 +41,11 @@ rmglob = function(glob, cb) {
 
 // compile (lit)coffeescript helper
 compile = function(src, lib) {
+  sourceRoot = p.root+src.replace(/\*.*$/, '')
   return gulp.src(src)
     .pipe(sourcemaps.init())
     .pipe(coffee())
-    .pipe(sourcemaps.write('sourcemaps', { includeContent: false, sourceRoot: __dirname+'/'+lib }))
+    .pipe(sourcemaps.write('sourcemaps', { includeContent: false, sourceRoot: sourceRoot }))
     .pipe(gulp.dest(lib));
 };
 

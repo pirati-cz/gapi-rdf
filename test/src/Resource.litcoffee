@@ -3,6 +3,9 @@
     expect = chai.expect
 
     rdf = require '../..'
+    rdf.use rdf.extensions.ClassMap
+    rdf.use rdf.extensions.Resource
+
     Resource = rdf.Resource
     env = rdf.environment
 

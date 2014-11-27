@@ -27,11 +27,40 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>Simple loader of rdf-interfaces and rdf-ext mixin which is then used as a base object for other GAPI classes and objects.</p>
-
+              
             </div>
             
-            <div class="content"><div class='highlight'><pre>rdf = <span class="hljs-built_in">require</span> <span class="hljs-string">'rdf'</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">getKeys</span> = <span class="hljs-params">(object, type)</span> -&gt;</span>
+  <span class="hljs-keyword">return</span> Object.keys object.prototype <span class="hljs-keyword">if</span> type == <span class="hljs-string">'prototype'</span>
+  Object.keys object
+<span class="hljs-function">
+<span class="hljs-title">processMap</span> = <span class="hljs-params">(byWhatMap)</span> -&gt;</span>
+  <span class="hljs-keyword">if</span> byWhatMap <span class="hljs-keyword">instanceof</span> Array
+    [byWhatProperty, type, keys] = byWhatMap
+  <span class="hljs-keyword">else</span>
+    byWhatProperty = byWhatMap
+  type ?= <span class="hljs-string">'prototype'</span>
+  keys ?= getKeys byWhatProperty, type
+  <span class="hljs-keyword">return</span> [byWhatProperty, type, keys]
+<span class="hljs-function">
+<span class="hljs-title">extendByMap</span> = <span class="hljs-params">(what, how)</span> -&gt;</span>
+  <span class="hljs-keyword">for</span> whatProperty, byWhatMap <span class="hljs-keyword">of</span> how
+    [byWhatProperty, type, keys] = processMap byWhatMap
+    <span class="hljs-keyword">if</span> what[whatProperty]?
+      <span class="hljs-keyword">for</span> key <span class="hljs-keyword">in</span> keys
+        <span class="hljs-keyword">if</span> type == <span class="hljs-string">'prototype'</span>
+          what[whatProperty].prototype[key] = byWhatProperty.prototype[key]
+        <span class="hljs-keyword">else</span>
+          what[whatProperty][key] = byWhatProperty[key]
+    <span class="hljs-keyword">else</span>
+      what[whatProperty] = byWhatProperty
+<span class="hljs-function">
+<span class="hljs-title">interfaces</span> = <span class="hljs-params">(implementation)</span> -&gt;</span>
+  rdf = <span class="hljs-built_in">require</span> <span class="hljs-keyword">switch</span> implementation
+    <span class="hljs-keyword">when</span> <span class="hljs-string">'rdf'</span>, <span class="hljs-string">'node-rdf'</span>
+      <span class="hljs-string">'./interfaces_rdf'</span>
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-string">'./interfaces_rdf'</span></pre></div></div>
             
         </li>
         
@@ -42,16 +71,38 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>patch not implemented method</p>
+              <h2 id="-todo">// TODO</h2>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>rdf.Graph.prototype.removeMatches = <span class="hljs-function"><span class="hljs-params">(s, p, o)</span> -&gt;</span>
-  <span class="hljs-property">@match</span>(s, p, o).forEach (t) =&gt;
-    <span class="hljs-property">@remove</span> t
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">when</span> <span class="hljs-string">'rdfi'</span>, <span class="hljs-string">'rdf-interfaces'</span>
+      <span class="hljs-string">'./interfaces_rdfi'</span>
+    <span class="hljs-keyword">when</span> <span class="hljs-string">'rdf_js_interface'</span>, <span class="hljs-string">'rdf_js_interfaces'</span>, <span class="hljs-string">'rdfstore'</span>, <span class="hljs-string">'rdfstorejs'</span>, <span class="hljs-string">'rdfstore.js'</span>
+      <span class="hljs-string">'./interfaces_rdf_js_interface'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h1 id="-">#</h1>
 
-<span class="hljs-built_in">require</span>(<span class="hljs-string">'rdf-ext'</span>)(rdf.RDFEnvironment.prototype)
-<span class="hljs-built_in">module</span>.exports = rdf</pre></div></div>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  rdf.interfaces = interfaces
+  rdf.use = <span class="hljs-function"><span class="hljs-params">(extension)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> extension.RDFInterfacesExtMap?
+      extendByMap rdf, extension.RDFInterfacesExtMap
+  rdf.extensions ?= {}
+  rdf.extensions.ClassMap ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./ClassMap'</span>
+  rdf.extensions.Resource ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./Resource'</span>
+  rdf
+
+<span class="hljs-built_in">module</span>.exports = interfaces()</pre></div></div>
             
         </li>
         

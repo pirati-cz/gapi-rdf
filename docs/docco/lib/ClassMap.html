@@ -30,7 +30,30 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ClassMap</span></span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Profile</span></span>
+
+  <span class="hljs-attribute">getClass</span>: <span class="hljs-function"><span class="hljs-params">(rdf_type, context_string)</span> -&gt;</span>
+    @[<span class="hljs-string">'classes'</span>]?.get rdf_type, context_string
+
+  <span class="hljs-attribute">setClass</span>: <span class="hljs-function"><span class="hljs-params">(rdf_type, handling_class, context_string)</span> -&gt;</span>
+    @[<span class="hljs-string">'classes'</span>] ?= <span class="hljs-keyword">new</span> ClassMap()
+    @[<span class="hljs-string">'classes'</span>].set rdf_type, handling_class, context_string
+
+  <span class="hljs-attribute">setDefaultClass</span>: <span class="hljs-function"><span class="hljs-params">(handling_class, context_string)</span> -&gt;</span>
+    @[<span class="hljs-string">'classes'</span>] ?= <span class="hljs-keyword">new</span> ClassMap()
+    @[<span class="hljs-string">'classes'</span>].setDefault handling_class, context_string
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RDFEnvironment</span></span>
+
+  <span class="hljs-attribute">createClassMap</span>: <span class="hljs-function"><span class="hljs-params">(classMap)</span> -&gt;</span>
+    (<span class="hljs-keyword">new</span> ClassMap()).<span class="hljs-reserved">import</span> classMap
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ClassMap</span></span>
+
+  <span class="hljs-property">@RDFInterfacesExtMap</span> =
+    <span class="hljs-string">'ClassMap'</span>: ClassMap
+    <span class="hljs-string">'Profile'</span>: Profile
+    <span class="hljs-string">'RDFEnvironment'</span>: RDFEnvironment
 
   <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
 
@@ -58,28 +81,7 @@
         <span class="hljs-keyword">else</span>
           @[rdf_type][context_string] ?= handler
 
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Profile</span></span>
-
-  <span class="hljs-attribute">getClass</span>: <span class="hljs-function"><span class="hljs-params">(rdf_type, context_string)</span> -&gt;</span>
-    @[<span class="hljs-string">'classes'</span>]?.get rdf_type, context_string
-
-  <span class="hljs-attribute">setClass</span>: <span class="hljs-function"><span class="hljs-params">(rdf_type, handling_class, context_string)</span> -&gt;</span>
-    @[<span class="hljs-string">'classes'</span>] ?= <span class="hljs-keyword">new</span> ClassMap()
-    @[<span class="hljs-string">'classes'</span>].set rdf_type, handling_class, context_string
-
-  <span class="hljs-attribute">setDefaultClass</span>: <span class="hljs-function"><span class="hljs-params">(handling_class, context_string)</span> -&gt;</span>
-    @[<span class="hljs-string">'classes'</span>] ?= <span class="hljs-keyword">new</span> ClassMap()
-    @[<span class="hljs-string">'classes'</span>].setDefault handling_class, context_string
-
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RDFEnvironment</span></span>
-
-  <span class="hljs-attribute">createClassMap</span>: <span class="hljs-function"><span class="hljs-params">(classMap)</span> -&gt;</span>
-    (<span class="hljs-keyword">new</span> ClassMap()).<span class="hljs-reserved">import</span> classMap
-
-<span class="hljs-built_in">module</span>.exports =
-  <span class="hljs-attribute">ClassMap</span>: ClassMap
-  <span class="hljs-attribute">Profile</span>: Profile
-  <span class="hljs-attribute">RDFEnvironment</span>: RDFEnvironment</pre></div></div>
+<span class="hljs-built_in">module</span>.exports = ClassMap</pre></div></div>
             
         </li>
         
